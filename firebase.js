@@ -68,18 +68,51 @@ if(
 
     statusText =
     "💌 Réponses disponibles";
-    document
+document
 .getElementById(
-    "showAnswers"
+    "notification"
 )
 .style.display =
 "block";
+
+document
+.getElementById(
+    "notification"
+)
+.innerText =
+statusText;
+
+    document
+    .getElementById(
+        "showAnswers"
+    )
+    .style.display =
+    "block";
 }
+else{
+
+    statusText =
+    "✅ Votre réponse est enregistrée\n\n⏳ En attente de Philippe...";
+
+    document
+    .getElementById(
+        "showAnswers"
+    )
+    .style.display =
+    "none";
+}
+
 
 document.getElementById(
     "status"
 ).innerText =
 statusText;
+document
+.getElementById(
+    "notification"
+)
+.style.display =
+"block";
 }
 }
 
@@ -141,6 +174,13 @@ document
         )
         .style.display =
         "block";
+
+        document
+.getElementById(
+    "notification"
+)
+.innerText =
+statusText;
 
         document
         .getElementById(
