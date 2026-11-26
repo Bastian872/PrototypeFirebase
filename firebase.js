@@ -133,6 +133,13 @@ async function(){
         "jour_1"
     );
 
+   const user =
+localStorage.getItem(
+    "user"
+);
+
+if(user === "kelly"){
+
     await updateDoc(
         docRef,
         {
@@ -140,6 +147,19 @@ async function(){
             answer
         }
     );
+
+}
+else{
+
+    await updateDoc(
+        docRef,
+        {
+            reponse_philippe:
+            answer
+        }
+    );
+
+}
 
     alert(
         "Réponse enregistrée ❤️"
@@ -175,12 +195,7 @@ document
         .style.display =
         "block";
 
-        document
-.getElementById(
-    "notification"
-)
-.innerText =
-statusText;
+        
 
         document
         .getElementById(
@@ -207,3 +222,41 @@ statusText;
         `;
     }
 );
+
+function chooseUser(user){
+
+    localStorage.setItem(
+        "user",
+        user
+    );
+
+    document.getElementById(
+        "identityScreen"
+    ).style.display =
+    "none";
+
+    document.getElementById(
+        "app"
+    ).style.display =
+    "block";
+}
+
+window.chooseUser =
+    chooseUser;
+
+    if(
+    localStorage.getItem(
+        "user"
+    )
+){
+
+    document.getElementById(
+        "identityScreen"
+    ).style.display =
+    "none";
+
+    document.getElementById(
+        "app"
+    ).style.display =
+    "block";
+}

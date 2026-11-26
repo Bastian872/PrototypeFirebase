@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>Historique</title>
+
+<style>
+
+body{
+
+    background:#000;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    padding:30px;
+}
+
+h1{
+
+    color:#D4AF37;
+
+    text-align:center;
+}
+
+.card{
+
+    max-width:700px;
+
+    margin:30px auto;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    background:#111;
+}
+
+.question{
+
+    font-size:24px;
+
+    margin-bottom:25px;
+
+    color:#D4AF37;
+}
+
+.answer{
+
+    margin-top:15px;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    background:#1c1c1c;
+}
+
+.label{
+
+    color:#D4AF37;
+
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+
+📖 Historique du couple
+
+</h1>
+
+<div
+id="history">
+
+Chargement...
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+}
+from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyAnqJ7rT7a4SaW4f_48faLgxjIMhKO4kCI",
+
+    authDomain:
+    "calendrier-avent-couple-52fba.firebaseapp.com",
+
+    projectId:
+    "calendrier-avent-couple-52fba",
+
+    storageBucket:
+    "calendrier-avent-couple-52fba.firebasestorage.app",
+
+    messagingSenderId:
+    "101261649418",
+
+    appId:
+    "1:101261649418:web:7c06721ae0a556fc7de1f3"
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+async function loadHistory(){
+
+    const docRef =
+    doc(
+        db,
+        "reponses",
+        "jour_1"
+    );
+
+    const docSnap =
+    await getDoc(docRef);
+
+    if(docSnap.exists()){
+
+        const data =
+        docSnap.data();
+
+        document
+        .getElementById(
+            "history"
+        )
+        .innerHTML =
+
+        `
+        <div class="card">
+
+            <div class="question">
+
+                ${data.question}
+
+            </div>
+
+            <div class="answer">
+
+                <div class="label">
+
+                    ❤️ Kelly
+
+                </div>
+
+                ${data.reponse_kelly}
+
+            </div>
+
+            <div class="answer">
+
+                <div class="label">
+
+                    ❤️ Philippe
+
+                </div>
+
+                ${data.reponse_philippe}
+
+            </div>
+
+        </div>
+        `;
+    }
+}
+
+loadHistory();
+
+</script>
+
+</body>
+
+</html>
