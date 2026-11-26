@@ -19,9 +19,29 @@ content="width=device-width, initial-scale=1">
 Question du jour
 </h1>
 
-<p>
-Qu'est-ce qui t'a fait craquer pour moi ?
+<p id="question">
+
+    Chargement...
+
 </p>
+
+<p id="status">
+
+    Chargement du statut...
+
+</p>
+
+<button
+    id="showAnswers"
+    style="display:none;">
+
+    💌 Découvrir nos réponses
+
+</button>
+<div
+    id="answers"
+    style="display:none;">
+</div>
 
 <textarea
 id="answer"
@@ -32,9 +52,17 @@ placeholder="Votre réponse...">
 
 <br><br>
 
-<button>
-Envoyer
+<button
+onclick="saveAnswer()">
+
+    Envoyer
+
 </button>
+
+<script
+    type="module"
+    src="firebase.js">
+</script>
 
 </body>
 
