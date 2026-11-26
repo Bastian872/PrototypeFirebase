@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+    <style>
+
+#notification{
+
+    display:none;
+
+    margin:20px auto;
+
+    max-width:500px;
+
+    padding:15px 20px;
+
+    border-radius:20px;
+
+    background:
+        rgba(212,175,55,.15);
+
+    color:#D4AF37;
+
+    font-size:18px;
+
+    text-align:center;
+}
+
+</style>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
+
+<title>Question du jour</title>
+
+</head>
+
+<body>
+
+    <div id="identityScreen">
+
+    <h1>
+
+        Qui êtes-vous ?
+
+    </h1>
+
+    <button
+        onclick="chooseUser('kelly')">
+
+        ❤️ Kelly
+
+    </button>
+
+    <button
+        onclick="chooseUser('philippe')">
+
+        🖤 Philippe
+
+    </button>
+
+</div>
+
+<div id="app"
+     style="display:none;">
+
+<h1>
+Question du jour
+</h1>
+
+<div id="notification">
+
+</div>
+
+<p id="question">
+
+    Chargement...
+
+</p>
+
+<p id="status">
+
+    Chargement du statut...
+
+</p>
+
+<button
+    id="showAnswers"
+    style="display:none;">
+
+    💌 Découvrir nos réponses
+
+</button>
+<div
+    id="answers"
+    style="display:none;">
+</div>
+
+<textarea
+id="answer"
+rows="6"
+cols="40"
+placeholder="Votre réponse...">
+</textarea>
+
+<br><br>
+
+<button
+onclick="saveAnswer()">
+
+    Envoyer
+
+</button>
+</div>
+<script
+    type="module"
+    src="firebase.js">
+</script>
+
+</body>
+
+</html>

@@ -5,9 +5,17 @@ import {
     getFirestore,
     doc,
     getDoc,
-    updateDoc
+    updateDoc,
+    onSnapshot
 }
 from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+import {
+    getMessaging,
+    getToken
+}
+from "https://www.gstatic.com/firebasejs/12.4.0/firebase-messaging.js";
+
 
 const firebaseConfig = {
 
@@ -35,85 +43,132 @@ initializeApp(firebaseConfig);
 
 const db =
 getFirestore(app);
+const messaging =
+getMessaging(app);
+function getCurrentDay(){
 
-async function loadQuestion(){
+    const now =
+    new Date();
 
-    const docRef =
-    doc(
+    const day =
+    now.getDate();
+
+    return `jour_${day}`;
+}
+
+
+function loadQuestion(){
+
+    console.log("Chargement :", getCurrentDay());
+
+    const docRef = doc(
         db,
         "reponses",
-        "jour_1"
+        getCurrentDay()
     );
 
-    const docSnap =
-    await getDoc(docRef);
+    onSnapshot(
+        docRef,
+        (docSnap) => {
 
-    if(docSnap.exists()){
+            console.log("Document trouvé ?", docSnap.exists());
 
-    const data =
-        docSnap.data();
+            if(!docSnap.exists()){
+                document.getElementById("question").innerText =
+                    "Aucune question trouvée dans Firebase";
 
-    document.getElementById(
-        "question"
-    ).innerText =
-    data.question;
+                document.getElementById("status").style.display = "none";
 
-    let statusText =
-    data.status;
 
-if(
-    data.reponse_kelly &&
-    data.reponse_philippe
-){
+                return;
+            }
 
-    statusText =
-    "💌 Réponses disponibles";
-document
-.getElementById(
-    "notification"
-)
-.style.display =
-"block";
+            console.log(docSnap.data());
 
-document
-.getElementById(
-    "notification"
-)
-.innerText =
-statusText;
+            const data = docSnap.data();
 
-    document
-    .getElementById(
-        "showAnswers"
-    )
-    .style.display =
-    "block";
-}
-else{
+        
 
-    statusText =
-    "✅ Votre réponse est enregistrée\n\n⏳ En attente de Philippe...";
+            document
+            .getElementById(
+                "question"
+            )
+            .innerText =
+            data.question;
 
-    document
-    .getElementById(
-        "showAnswers"
-    )
-    .style.display =
-    "none";
+            const user = localStorage.getItem("user");
+
+let statusText = "";
+
+if(user === "kelly"){
+
+    if(data.reponse_kelly){
+        statusText =
+        "✅ Votre réponse est enregistrée\n\n⏳ En attente de Philippe...";
+    }else{
+        statusText =
+        "✍️ Répondez à la question du jour";
+    }
+
+}else{
+
+    if(data.reponse_philippe){
+        statusText =
+        "✅ Votre réponse est enregistrée\n\n⏳ En attente de Kelly...";
+    }else{
+        statusText =
+        "✍️ Répondez à la question du jour";
+    }
+
 }
 
+            if(
+                data.reponse_kelly &&
+                data.reponse_philippe
+            ){
 
-document.getElementById(
-    "status"
-).innerText =
-statusText;
-document
-.getElementById(
-    "notification"
-)
-.style.display =
-"block";
-}
+                statusText =
+                "💌 Réponses disponibles";
+
+                document
+                .getElementById(
+                    "showAnswers"
+                )
+                .style.display =
+                "block";
+            }
+            else{
+
+                document
+                .getElementById(
+                    "showAnswers"
+                )
+                .style.display =
+                "none";
+            }
+
+            document
+            .getElementById(
+                "status"
+            )
+            .innerText =
+            statusText;
+
+            document
+            .getElementById(
+                "notification"
+            )
+            .style.display =
+            "block";
+
+            document
+            .getElementById(
+                "notification"
+            )
+            .innerText =
+            statusText;
+        }
+    );
 }
 
 loadQuestion();
@@ -128,43 +183,42 @@ async function(){
 
     const docRef =
     doc(
-        db,
-        "reponses",
-        "jour_1"
-    );
-
-   const user =
-localStorage.getItem(
-    "user"
+    db,
+    "reponses",
+    getCurrentDay()
 );
 
-if(user === "kelly"){
-
-    await updateDoc(
-        docRef,
-        {
-            reponse_kelly:
-            answer
-        }
+    const user =
+    localStorage.getItem(
+        "user"
     );
 
-}
-else{
+    if(user === "kelly"){
 
-    await updateDoc(
-        docRef,
-        {
-            reponse_philippe:
-            answer
-        }
-    );
+        await updateDoc(
+            docRef,
+            {
+                reponse_kelly:
+                answer
+            }
+        );
+    }
+    else{
 
-}
+        await updateDoc(
+            docRef,
+            {
+                reponse_philippe:
+                answer
+            }
+        );
+    }
 
     alert(
         "Réponse enregistrée ❤️"
     );
-}
+};
+
 document
 .getElementById(
     "showAnswers"
@@ -174,16 +228,14 @@ document
     async () => {
 
         const docRef =
-        doc(
-            db,
-            "reponses",
-            "jour_1"
-        );
+       doc(
+    db,
+    "reponses",
+    getCurrentDay()
+);
 
         const docSnap =
-        await getDoc(
-            docRef
-        );
+        await getDoc(docRef);
 
         const data =
         docSnap.data();
@@ -195,30 +247,19 @@ document
         .style.display =
         "block";
 
-        
-
         document
         .getElementById(
             "answers"
         )
         .innerHTML =
-
         `
-        <h3>
-        ❤️ Kelly
-        </h3>
+        <h3>Kelly</h3>
 
-        <p>
-        ${data.reponse_kelly}
-        </p>
+        <p>${data.reponse_kelly}</p>
 
-        <h3>
-        ❤️ Philippe
-        </h3>
+        <h3>Philippe</h3>
 
-        <p>
-        ${data.reponse_philippe}
-        </p>
+        <p>${data.reponse_philippe}</p>
         `;
     }
 );
@@ -230,33 +271,84 @@ function chooseUser(user){
         user
     );
 
-    document.getElementById(
+    document
+    .getElementById(
         "identityScreen"
-    ).style.display =
+    )
+    .style.display =
     "none";
 
-    document.getElementById(
+    document
+    .getElementById(
         "app"
-    ).style.display =
+    )
+    .style.display =
     "block";
 }
 
 window.chooseUser =
-    chooseUser;
+chooseUser;
 
-    if(
+if(
     localStorage.getItem(
         "user"
     )
 ){
 
-    document.getElementById(
+    document
+    .getElementById(
         "identityScreen"
-    ).style.display =
+    )
+    .style.display =
     "none";
 
-    document.getElementById(
+    document
+    .getElementById(
         "app"
-    ).style.display =
+    )
+    .style.display =
     "block";
 }
+
+window.askNotificationPermission =
+async function(){
+
+    const permission =
+    await Notification.requestPermission();
+
+    console.log(
+        "Permission :",
+        permission
+    );
+
+    if(
+        permission ===
+        "granted"
+    ){
+
+        try{
+
+            const currentToken =
+            await getToken(
+                messaging,
+                {
+                    vapidKey:
+                    "BBL4-5eOiC-aIEl3gs5hboorRaoIR661CKYYHldR0ahzk4LkwV6h4nKxoJMtNtn-Ipzlxyp6IbNu1zJVkTecPeA"
+                }
+            );
+
+            console.log(
+                "Token Firebase :",
+                currentToken
+            );
+
+        }
+        catch(error){
+
+            console.error(
+                error
+            );
+        }
+    }
+}
+
